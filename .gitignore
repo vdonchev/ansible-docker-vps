@@ -11,3 +11,5 @@ Thumbs.db
 
 # Optional: SSH known_hosts if you ever generate locally
 .ssh/known_hosts
+
+*.zip

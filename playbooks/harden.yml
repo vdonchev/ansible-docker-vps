@@ -52,3 +52,6 @@
       service:
         name: ssh
         state: restarted
+
+    - name: Validate SSHD configuration
+      command: sshd -t
