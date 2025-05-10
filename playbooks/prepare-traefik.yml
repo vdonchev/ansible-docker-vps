@@ -1,0 +1,25 @@
+- name: Prepare Traefik environment
+  hosts: vps
+  become: true
+  tasks:
+    - name: Ensure Traefik Docker network exists
+      community.docker.docker_network:
+        name: traefik-local
+        driver: bridge
+        state: present
+
+    - name: Create Traefik config directory
+      ansible.builtin.file:
+        path: /srv/traefik
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: docker
+        mode: '0755'
+
+    - name: Ensure acme.json exists with correct permissions
+      ansible.builtin.file:
+        path: /srv/traefik/acme.json
+        state: touch
+        owner: "{{ ansible_user }}"
+        group: docker
+        mode: '0600'
