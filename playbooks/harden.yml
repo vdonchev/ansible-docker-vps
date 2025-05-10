@@ -1,0 +1,54 @@
+- name: Harden VPS
+  hosts: vps
+  become: yes
+  tasks:
+    - name: Install fail2ban
+      apt:
+        name: fail2ban
+        state: present
+        update_cache: yes
+
+    - name: Enable and start fail2ban
+      systemd:
+        name: fail2ban
+        enabled: yes
+        state: started
+
+    - name: Install ufw
+      apt:
+        name: ufw
+        state: present
+
+    - name: Allow SSH
+      ufw:
+        rule: allow
+        name: OpenSSH
+
+    - name: Allow HTTP/HTTPS
+      ufw:
+        rule: allow
+        port: "{{ item }}"
+      loop:
+        - 80
+        - 443
+
+    - name: Enable UFW
+      ufw:
+        state: enabled
+        policy: deny
+
+    - name: Harden SSH config (disable root, allow only key auth)
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
+        backrefs: yes
+      loop:
+        - { regexp: '^#?PermitRootLogin.*', line: 'PermitRootLogin no' }
+        - { regexp: '^#?PasswordAuthentication.*', line: 'PasswordAuthentication no' }
+
+    - name: Restart SSH
+      service:
+        name: ssh
+        state: restarted

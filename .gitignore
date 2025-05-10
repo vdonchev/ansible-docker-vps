@@ -1,0 +1,13 @@
+# IntelliJ IDEA / PhpStorm
+.idea/
+*.iml
+
+# Ansible cache
+*.retry
+
+# System
+.DS_Store
+Thumbs.db
+
+# Optional: SSH known_hosts if you ever generate locally
+.ssh/known_hosts

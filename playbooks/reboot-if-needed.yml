@@ -1,0 +1,14 @@
+- name: Reboot VPS if required
+  hosts: vps
+  become: yes
+  tasks:
+    - name: Check if reboot is required
+      stat:
+        path: /var/run/reboot-required
+      register: reboot_flag
+
+    - name: Reboot the server (if required)
+      reboot:
+        msg: "Rebooting due to system updates"
+        reboot_timeout: 300
+      when: reboot_flag.stat.exists
